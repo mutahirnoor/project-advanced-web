@@ -1,0 +1,172 @@
+/* General body styling */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+  color: #333;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Dark mode adjustments */
+body.dark-mode {
+  background-color: #121212;
+  color: #fff;
+}
+
+h1 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+input, button {
+  padding: 10px 15px;
+  font-size: 16px;
+  margin: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* Dark mode button and input adjustments */
+body.dark-mode input, body.dark-mode button {
+  border-color: #444;
+  background-color: #333;
+  color: #fff;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+/* Dark mode button */
+body.dark-mode button {
+  background-color: #3e8e41;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+/* Pokemon sprite styling */
+#pokemonSprite {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-top: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+#pokemonSprite:hover {
+  transform: scale(1.1);
+}
+
+/* Additional sprites container */
+#pokemonSprites {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+#pokemonSprites div {
+  text-align: center;
+  margin: 10px;
+}
+
+#pokemonSprites img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Pokemon information sections */
+#pokemonStats, #pokemonMoves, #pokemonEvolution, #pokemonInfo {
+  background-color: white;
+  margin: 20px auto;
+  padding: 20px;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Dark mode styling for pokemon info sections */
+body.dark-mode #pokemonStats,
+body.dark-mode #pokemonMoves,
+body.dark-mode #pokemonEvolution,
+body.dark-mode #pokemonInfo {
+  background-color: #222;
+  color: #fff;
+}
+
+/* Pokemon evolution display */
+#pokemonEvolution {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+#pokemonEvolution div {
+  text-align: center;
+}
+
+#pokemonEvolution img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Suggestions dropdown styling */
+#suggestions {
+  text-align: left;
+  max-width: 300px;
+  margin: 0 auto 10px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+  position: relative;
+  z-index: 10;
+}
+
+/* Dark mode for suggestions */
+body.dark-mode #suggestions {
+  background: #333;
+  border-color: #444;
+}
+
+#suggestions div {
+  padding: 5px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+/* Dark mode for suggestion hover */
+body.dark-mode #suggestions div:hover {
+  background-color: #555;
+}
+
+#suggestions div:hover {
+  background-color: #f0f0f0;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 600px) {
+  #pokemonStats, #pokemonMoves, #pokemonEvolution, #pokemonInfo {
+    width: 95%;
+  }
+}
