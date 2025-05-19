@@ -87,6 +87,6 @@
 
 ## 🧑‍💻 Author
 
-Your Name – [mutahirnoor]((https://github.com/mutahirnoor))
+mutahirnoor((https://github.com/mutahirnoor))
 
 
