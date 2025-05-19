@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pokémon Info</title>
+  <link rel="stylesheet" href="src/style.css" />
+</head>
+<body>
+
+  <h1>Pokémon Info</h1>
+
+  <!-- Pokémon Search Input -->
+  <input type="text" id="pokemonName" placeholder="Enter Pokémon name" />
+  <div id="suggestions"></div>
+  <button id="fetchButton">Fetch Pokémon</button>
+
+  <!-- Like and Show Favorites Buttons -->
+  <button id="likeButton" style="margin-left: 10px;">Like ❤️</button>
+  <button id="showFavoritesButton" style="margin-left: 10px;">Show Favorites</button>
+  
+  <!-- Generation Buttons -->
+  <div id="generationButtons" style="margin-top: 10px;"></div>
+
+  <!-- Favorites Display right under generation buttons -->
+  <div id="favoritesContainer" style="margin-top: 20px;"></div>
+
+  <!-- Main Pokémon Sprite -->
+  <img src="" alt="Pokemon Sprite" id="pokemonSprite" style="display: none; cursor: pointer" />
+  <div id="pokemonForms" style="margin-top: 20px;"></div>
+
+  <!-- Pokémon Sprite Gallery -->
+  <div id="pokemonSprites" style="display: flex; justify-content: center; flex-wrap: wrap; margin-top: 20px;"></div>
+
+  <!-- Info Sections for Pokémon -->
+  <div id="pokemonInfo" style="margin-top: 20px;"></div>
+  <div id="pokemonStats" style="margin-top: 20px;"></div>
+  <div id="pokemonEvolution" style="margin-top: 20px;"></div>
+  <div id="pokemonMoves" style="margin-top: 20px;"></div>
+
+  <script src="main.js"></script>
+</body>
+</html>
