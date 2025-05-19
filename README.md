@@ -6,7 +6,7 @@
 ### `index.html`
 
 - Contains the main layout:
-  - A **search bar** and **random team generator** button.
+  - A **search bar** button.
   - Generation buttons (Gen 1 to Gen 9) created dynamically.
   - A `pokeContainer` where Pokémon cards are displayed.
   - A `pokeModal` that shows detailed info about a clicked Pokémon.
@@ -46,14 +46,14 @@
   - Learnable moves using `getPokemonMoves()` and `getMoveDetails()`.
 
 - Populates the modal with:
-  - Image, types, stats (with colored bars), description, evolution chain, and move list.
+  - Image, types, stats, description, evolution chain, and move list.
 
 ---
 
 ## 🧠 Key Functions Explained
 
 - `capitalizeFirstLetter(string)`: Makes names look nicer.
-- `getPokemonId(url)`: Extracts Pokémon ID from API URL.
+- `getPokemonId(url)`: Extracts Pokémon ID from API [URL](https://pokeapi.co/).
 - `getEvolutionChain(chain, evoList)`: Recursively gathers Pokémon names in the evolution chain.
 - `getPokemonMoves(pokemon)`: Filters and fetches details of level-up moves.
 
