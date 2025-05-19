@@ -88,10 +88,6 @@
 
 ## 🧑‍💻 Author
 
-Your Name – [mutahirnoor](https://github.com/yourusername)
+Your Name – [mutahirnoor]((https://github.com/mutahirnoor))
 
----
 
-## 📜 License
-
-This project is open source and available under the [MIT License](LICENSE).
