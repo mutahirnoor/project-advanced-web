@@ -71,7 +71,6 @@
 
 - [x] Browse by generation
 - [x] Real-time search
-- [x] Random team generator
 - [x] Pokémon detail modal
 - [x] Evolution chain and moves
 - [x] Responsive design and styling
