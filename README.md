@@ -85,11 +85,6 @@
 
 ---
 
-## 📷 Screenshots
-
-_(You can add images here of the app in action.)_
-
----
 
 ## 🧑‍💻 Author
 
