@@ -16,6 +16,8 @@ const generationLimits = {
 };
 
 document.getElementById("fetchButton").addEventListener("click", fetchData);
+document.getElementById("likeButton").addEventListener("click", toggleLikeCurrentPokemon);
+document.getElementById("showFavoritesButton").addEventListener("click", showFavorites);
 
 document.getElementById("pokemonName").addEventListener("input", () => {
   const input = document.getElementById("pokemonName").value.toLowerCase();
@@ -105,6 +107,9 @@ async function fetchData() {
     const data = await response.json();
     currentPokemonData = data;
 
+    // Update like button text based on whether this Pokémon is liked
+    updateLikeButton();
+
     const imgElement = document.getElementById("pokemonSprite");
     imgElement.src = data.sprites.front_default;
     imgElement.style.display = "block";
@@ -122,6 +127,7 @@ async function fetchData() {
     document.getElementById("pokemonMoves").innerHTML = "";
     document.getElementById("pokemonEvolution").innerHTML = "";
     document.getElementById("pokemonInfo").innerHTML = "";
+    document.getElementById("favoritesContainer").innerHTML = ""; // Clear favorites when loading new Pokémon
 
     showPokemonDetails(data);
     await fetchEvolutionDetails(data.species.url);
@@ -188,181 +194,152 @@ async function fetchMoveDescription(moveName) {
   const res = await fetch(`https://pokeapi.co/api/v2/move/${moveName}`);
   const move = await res.json();
 
-  const effect = move.effect_entries.find(e => e.language.name === "en");
+  const effect = move.effect_entries.find(entry => entry.language.name === "en");
+  const description = effect ? effect.short_effect : "No description";
+
   return {
-    description: effect?.effect || "No description available",
+    description,
     accuracy: move.accuracy,
-    damage_class: move.damage_class?.name || "unknown"
+    damage_class: move.damage_class.name
   };
-}
-
-async function fetchEvolutionDetails(speciesUrl) {
-  const species = await fetch(speciesUrl).then(res => res.json());
-  const evoChain = await fetch(species.evolution_chain.url).then(res => res.json());
-  displayEvolutionChain(evoChain.chain);
-}
-
-async function displayEvolutionChain(chain) {
-  const container = document.getElementById("pokemonEvolution");
-  container.innerHTML = "<h3>Evolution Chain:</h3>";
-
-  const scrollWrapper = document.createElement("div");
-  scrollWrapper.style.overflowX = "auto";
-  scrollWrapper.style.whiteSpace = "nowrap";
-  scrollWrapper.style.padding = "10px";
-
-  const html = await buildEvolutionHTML(chain);
-  scrollWrapper.innerHTML = html;
-  container.appendChild(scrollWrapper);
-}
-
-async function buildEvolutionHTML(chain) {
-  const id = getPokemonId(chain.species.url);
-  const name = capitalizeFirstLetter(chain.species.name);
-  const img = `<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png" onclick="fetchDataById(${id})" style="cursor:pointer;">`;
-
-  let html = `<div style="display: flex; flex-direction: column; align-items: center; margin: 10px;">`;
-  html += `<div>${img}<br>${name}</div>`;
-
-  if (chain.evolves_to.length > 0) {
-    html += `<div style="display: flex;">`;
-    for (const evo of chain.evolves_to) {
-      const condition = evo.evolution_details[0];
-      let triggerText = "";
-      if (condition) {
-        if (condition.min_level) {
-          triggerText = `Level ${condition.min_level}`;
-        } else if (condition.item) {
-          triggerText = `Use ${capitalizeFirstLetter(condition.item.name.replace(/-/g, " "))}`;
-        }
-      }
-
-      const next = await buildEvolutionHTML(evo);
-      html += `<div style="margin: 0 10px; text-align: center;">
-        ↓<br><small>${triggerText}</small><br>${next}
-      </div>`;
-    }
-    html += `</div>`;
-  }
-
-  html += `</div>`;
-  return html;
-}
-
-function getPokemonId(url) {
-  return url.split("/")[6];
-}
-
-async function showPokemonInfo(data) {
-  const container = document.getElementById("pokemonInfo");
-  const species = await fetch(data.species.url).then(res => res.json());
-  const flavor = species.flavor_text_entries.find(e => e.language.name === "en");
-
-  const types = data.types.map(t => {
-    const color = typeColors[t.type.name] || "#777";
-    return `<span style="background:${color}; color:white; padding:4px 8px; border-radius:8px; margin-right:4px;">${capitalizeFirstLetter(t.type.name)}</span>`;
-  }).join(" ");
-
-  const abilities = data.abilities.map(a => capitalizeFirstLetter(a.ability.name)).join(", ");
-  container.innerHTML = `
-    <h3>${capitalizeFirstLetter(data.name)}</h3>
-    <h3>Types:</h3><p>${types}</p>
-    <h3>Abilities:</h3><p>${abilities}</p>
-    <h3>Description:</h3><p>${flavor ? flavor.flavor_text.replace(/\f/g, " ") : "No description found."}</p>
-  `;
 }
 
 function displayAdditionalSprites(data) {
   const container = document.getElementById("pokemonSprites");
-  const sprites = [
-    { label: "Front", sprite: data.sprites.front_default },
-    { label: "Back", sprite: data.sprites.back_default },
-    { label: "Shiny Front", sprite: data.sprites.front_shiny },
-    { label: "Shiny Back", sprite: data.sprites.back_shiny }
-  ];
+  container.innerHTML = "";
 
-  sprites.forEach(s => {
-    if (s.sprite) {
-      const div = document.createElement("div");
-      div.style.margin = "10px";
-
+  for (const key in data.sprites) {
+    const val = data.sprites[key];
+    if (val && typeof val === "string" && val.endsWith(".png")) {
       const img = document.createElement("img");
-      img.src = s.sprite;
-      img.alt = s.label;
-      img.style.width = "100px";
-      img.style.height = "100px";
-      img.style.borderRadius = "50%";
-      img.style.cursor = "pointer";
-      img.onclick = async () => {
-        await fetchDataById(getPokemonId(data.species.url));
-      };
-
-      const label = document.createElement("div");
-      label.textContent = s.label;
-
-      div.appendChild(img);
-      div.appendChild(label);
-      container.appendChild(div);
+      img.src = val;
+      img.alt = key;
+      img.style.width = "80px";
+      img.style.height = "80px";
+      img.style.margin = "5px";
+      container.appendChild(img);
     }
+  }
+}
+
+async function fetchEvolutionDetails(speciesUrl) {
+  const res = await fetch(speciesUrl);
+  const speciesData = await res.json();
+
+  if (!speciesData.evolution_chain) {
+    document.getElementById("pokemonEvolution").innerHTML = "<p>No evolution data.</p>";
+    return;
+  }
+
+  const evoRes = await fetch(speciesData.evolution_chain.url);
+  const evoData = await evoRes.json();
+
+  const evoContainer = document.getElementById("pokemonEvolution");
+  evoContainer.innerHTML = "<h3>Evolution Chain:</h3>";
+
+  function extractEvolutions(chain) {
+    const evoChain = [];
+    let current = chain;
+
+    do {
+      evoChain.push(current.species.name);
+      current = current.evolves_to[0];
+    } while (current && current.hasOwnProperty("evolves_to"));
+
+    return evoChain;
+  }
+
+  const evolutions = extractEvolutions(evoData.chain);
+  evolutions.forEach(pokemon => {
+    const p = document.createElement("p");
+    p.textContent = capitalizeFirstLetter(pokemon);
+    evoContainer.appendChild(p);
   });
 }
 
-async function fetchDataById(id) {
-  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-  const data = await res.json();
-  currentPokemonData = data;
-  document.getElementById("pokemonName").value = data.name;
-  await fetchData();
+async function showPokemonInfo(data) {
+  const infoContainer = document.getElementById("pokemonInfo");
+  infoContainer.innerHTML = `
+    <h3>${capitalizeFirstLetter(data.name)}</h3>
+    <p>Height: ${data.height / 10} m</p>
+    <p>Weight: ${data.weight / 10} kg</p>
+    <p>Types: ${data.types.map(t => t.type.name).join(", ")}</p>
+  `;
 }
 
-async function showGameVersions(pokemonId) {
-  const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}/encounters`);
-  const data = await response.json();
+async function showGameVersions(id) {
+  // Placeholder if you want to add game version info
+}
 
-  const versions = new Set();
-  data.forEach(location => {
-    location.version_details.forEach(detail => {
-      versions.add(detail.version.name);
-    });
-  });
+function getFavorites() {
+  const favs = localStorage.getItem("pokemonFavorites");
+  return favs ? JSON.parse(favs) : [];
+}
 
-  const beautify = (str) =>
-    str.replace(/-/g, ' ')
-       .split(' ')
-       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-       .join(' ');
+function saveFavorites(favs) {
+  localStorage.setItem("pokemonFavorites", JSON.stringify(favs));
+}
 
-  const versionList = Array.from(versions).sort().map(beautify);
-  const container = document.getElementById("pokemonInfo");
+function updateLikeButton() {
+  if (!currentPokemonData) return;
+  const favs = getFavorites();
+  const isFav = favs.includes(currentPokemonData.name);
+  document.getElementById("likeButton").textContent = isFav ? "Unlike 💔" : "Like ❤️";
+}
 
-  const toggleId = "gameVersionsToggle";
-  const listId = "gameVersionsList";
+function toggleLikeCurrentPokemon() {
+  if (!currentPokemonData) return alert("No Pokémon loaded.");
 
-  let html = `<h3>Appears In Games:</h3>`;
+  const favs = getFavorites();
+  const name = currentPokemonData.name;
+  const index = favs.indexOf(name);
 
-  if (versionList.length > 0) {
-    html += `
-      <button id="${toggleId}" style="margin-bottom:5px;">Show Games</button>
-      <div id="${listId}" style="display:none;">
-        <ul style="list-style: disc; padding-left: 20px;">
-          ${versionList.map(game => `<li>${game}</li>`).join("")}
-        </ul>
-      </div>
-    `;
+  if (index === -1) {
+    favs.push(name);
   } else {
-    html += `<p>Not found in any game via encounters.</p>`;
+    favs.splice(index, 1);
   }
 
-  container.innerHTML += html;
+  saveFavorites(favs);
+  updateLikeButton();
+}
 
-  const toggleBtn = document.getElementById(toggleId);
-  const listDiv = document.getElementById(listId);
+async function showFavorites() {
+  const favs = getFavorites();
+  const container = document.getElementById("favoritesContainer");
+  container.innerHTML = "<h3>Your Favorite Pokémon:</h3>";
 
-  if (toggleBtn && listDiv) {
-    toggleBtn.addEventListener("click", () => {
-      const isVisible = listDiv.style.display === "block";
-      listDiv.style.display = isVisible ? "none" : "block";
-      toggleBtn.textContent = isVisible ? "Show Games" : "Hide Games";
-    });
+  if (favs.length === 0) {
+    container.innerHTML += "<p>You have no favorite Pokémon yet.</p>";
+    return;
   }
+
+  const promises = favs.map(name => fetch(`https://pokeapi.co/api/v2/pokemon/${name}`).then(res => res.json()));
+  const favoritesData = await Promise.all(promises);
+
+  favoritesData.forEach(pokemon => {
+    const div = document.createElement("div");
+    div.style.display = "inline-block";
+    div.style.margin = "10px";
+    div.style.cursor = "pointer";
+
+    const img = document.createElement("img");
+    img.src = pokemon.sprites.front_default;
+    img.alt = pokemon.name;
+    img.style.width = "80px";
+    img.style.height = "80px";
+    img.style.borderRadius = "50%";
+    img.onclick = async () => {
+      document.getElementById("pokemonName").value = pokemon.name;
+      await fetchData();
+      container.innerHTML = ""; // Hide favorites after selecting one
+    };
+
+    const label = document.createElement("div");
+    label.textContent = capitalizeFirstLetter(pokemon.name);
+
+    div.appendChild(img);
+    div.appendChild(label);
+    container.appendChild(div);
+  });
 }
