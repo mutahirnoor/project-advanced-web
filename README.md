@@ -88,7 +88,7 @@
 
 ## 🧑‍💻 Author
 
-Your Name – [Your GitHub Profile](https://github.com/yourusername)
+Your Name – [mutahirnoor](https://github.com/yourusername)
 
 ---
 
